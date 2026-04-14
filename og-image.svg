@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#0c0e13"/>
+  <rect x="40" y="40" width="1120" height="550" rx="16" fill="#14171e" stroke="#252a37" stroke-width="2"/>
+  <text x="600" y="250" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="72" font-weight="700" fill="#e2e4e9">Freelancer Rate</text>
+  <text x="600" y="340" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="72" font-weight="700" fill="#e2e4e9">Calculator</text>
+  <text x="600" y="420" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="28" fill="#7c8298">Know your worth. Calculate your minimum viable rate.</text>
+  <rect x="440" y="470" width="320" height="50" rx="10" fill="#4a6cf7"/>
+  <text x="600" y="503" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="20" font-weight="600" fill="#ffffff">Free Tool -- No Signup</text>
+  <text x="600" y="560" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="18" fill="#7c8298">zeiyre.tools</text>
+</svg>

@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Freelancer Rate Calculator -- Know Your Worth</title>
+  <meta name="description" content="Calculate your ideal freelance hourly rate based on your salary goals, expenses, and available hours. Free, instant, no signup required.">
+  <meta property="og:title" content="Freelancer Rate Calculator -- Know Your Worth">
+  <meta property="og:description" content="Calculate your ideal freelance hourly rate based on your salary goals, expenses, and available hours.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://freelancer-rate-calc.netlify.app">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Freelancer Rate Calculator">
+  <meta name="twitter:description" content="Calculate your ideal freelance hourly rate. Free tool, no signup.">
+  <meta name="twitter:image" content="https://freelancer-rate-calc.netlify.app/og-image.svg">
+  <meta property="og:image" content="https://freelancer-rate-calc.netlify.app/og-image.svg">
+  <meta property="og:site_name" content="Zeiyre Tools">
+  <meta property="og:locale" content="en_US">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="Zeiyre">
+  <meta name="keywords" content="freelancer rate calculator, freelance hourly rate, calculate freelance rate, freelance pricing, freelance income calculator">
+  <link rel="canonical" href="https://freelancer-rate-calc.netlify.app/">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>$</text></svg>">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+    :root {
+      --bg: #0c0e13;
+      --surface: #14171e;
+      --surface-2: #1b1f2a;
+      --border: #252a37;
+      --border-focus: #4a6cf7;
+      --text: #e2e4e9;
+      --text-muted: #7c8298;
+      --accent: #4a6cf7;
+      --accent-glow: rgba(74, 108, 247, 0.15);
+      --green: #34d399;
+      --green-muted: rgba(52, 211, 153, 0.1);
+      --orange: #fb923c;
+      --radius: 10px;
+      --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      --mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', Consolas, monospace;
+    }
+
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap');
+
+    html { scroll-behavior: smooth }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Header */
+    header {
+      padding: 60px 0 40px;
+      text-align: center;
+    }
+
+    header .tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-glow);
+      padding: 5px 14px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: clamp(28px, 5vw, 40px);
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+
+    header p {
+      color: var(--text-muted);
+      font-size: 16px;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    /* Sections */
+    .calc-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      margin-bottom: 16px;
+    }
+
+    .calc-section h2 {
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    /* Input groups */
+    .input-group {
+      margin-bottom: 20px;
+    }
+
+    .input-group:last-child { margin-bottom: 0 }
+
+    .input-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .input-group .hint {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    .input-wrapper .prefix {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .input-wrapper .suffix {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 13px;
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-family: var(--mono);
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text);
+      transition: border-color 0.2s, box-shadow 0.2s;
+      -moz-appearance: textfield;
+    }
+
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+    }
+
+    input[type="number"]:focus {
+      outline: none;
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    input.has-prefix { padding-left: 30px }
+
+    /* Hours breakdown grid */
+    .hours-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    @media (max-width: 500px) {
+      .hours-grid { grid-template-columns: 1fr }
+    }
+
+    .hours-grid .input-group { margin-bottom: 0 }
+
+    .billable-result {
+      margin-top: 16px;
+      padding: 12px 16px;
+      background: var(--surface-2);
+      border-radius: 8px;
+      border-left: 3px solid var(--accent);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .billable-result span:first-child {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .billable-result span:last-child {
+      font-family: var(--mono);
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--accent);
+    }
+
+    /* Results */
+    .results-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      margin-bottom: 16px;
+    }
+
+    .results-section h2 {
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    .rate-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 500px) {
+      .rate-cards { grid-template-columns: 1fr }
+    }
+
+    .rate-card {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px 16px;
+      text-align: center;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .rate-card:hover {
+      border-color: var(--border-focus);
+      transform: translateY(-2px);
+    }
+
+    .rate-card.primary {
+      border-color: var(--accent);
+      background: linear-gradient(135deg, var(--accent-glow), transparent);
+    }
+
+    .rate-card .rate-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .rate-card .rate-value {
+      font-family: var(--mono);
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--green);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .rate-card.primary .rate-value {
+      font-size: 32px;
+    }
+
+    .rate-card .rate-note {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* Breakdown table */
+    .breakdown {
+      border-top: 1px solid var(--border);
+      padding-top: 20px;
+    }
+
+    .breakdown h3 {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .breakdown-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      font-size: 14px;
+    }
+
+    .breakdown-row:not(:last-child) {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .breakdown-row .label { color: var(--text-muted) }
+
+    .breakdown-row .value {
+      font-family: var(--mono);
+      font-weight: 500;
+    }
+
+    .breakdown-row.total {
+      border-top: 2px solid var(--border);
+      margin-top: 4px;
+      padding-top: 12px;
+      font-weight: 600;
+    }
+
+    .breakdown-row.total .value {
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    /* Methodology */
+    .methodology {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      margin-bottom: 16px;
+    }
+
+    .methodology summary {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .methodology summary::-webkit-details-marker { display: none }
+
+    .methodology summary::before {
+      content: '+';
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      background: var(--surface-2);
+      font-size: 14px;
+      font-weight: 700;
+      transition: transform 0.2s;
+    }
+
+    .methodology[open] summary::before {
+      content: '-';
+    }
+
+    .methodology .method-content {
+      margin-top: 16px;
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    .methodology .method-content p { margin-bottom: 12px }
+
+    .methodology .method-content code {
+      font-family: var(--mono);
+      font-size: 13px;
+      background: var(--surface-2);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--accent);
+    }
+
+    /* CTA */
+    .cta-banner {
+      background: linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    @media (max-width: 500px) {
+      .cta-banner { flex-direction: column; text-align: center }
+    }
+
+    .cta-banner .cta-text {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .cta-banner .cta-text strong {
+      color: var(--text);
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .cta-link {
+      display: inline-block;
+      padding: 10px 20px;
+      background: var(--accent);
+      color: #fff;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: opacity 0.2s;
+    }
+
+    .cta-link:hover { opacity: 0.85 }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 40px 0;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    footer a {
+      color: var(--text-muted);
+      text-decoration: none;
+      border-bottom: 1px solid var(--border);
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    footer a:hover {
+      color: var(--text);
+      border-color: var(--text);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <header>
+      <div class="tag">Free Tool</div>
+      <h1>Freelancer Rate Calculator</h1>
+      <p>Stop guessing. Calculate your minimum viable rate based on real numbers, then add a margin for profit.</p>
+    </header>
+
+    <!-- Income Target -->
+    <div class="calc-section">
+      <h2>1. Income Target</h2>
+      <div class="input-group">
+        <label for="salary">Desired Annual Income</label>
+        <div class="hint">What you'd want to take home if you were salaried</div>
+        <div class="input-wrapper">
+          <span class="prefix">$</span>
+          <input type="number" id="salary" class="has-prefix" placeholder="75000" value="75000">
+        </div>
+      </div>
+    </div>
+
+    <!-- Business Expenses -->
+    <div class="calc-section">
+      <h2>2. Annual Business Expenses</h2>
+      <div class="input-group">
+        <label for="taxes">Self-Employment Taxes</label>
+        <div class="hint">Typically 25-30% of income in the US</div>
+        <div class="input-wrapper">
+          <span class="prefix">$</span>
+          <input type="number" id="taxes" class="has-prefix" placeholder="20000" value="20000">
+        </div>
+      </div>
+      <div class="input-group">
+        <label for="insurance">Health Insurance</label>
+        <div class="input-wrapper">
+          <span class="prefix">$</span>
+          <input type="number" id="insurance" class="has-prefix" placeholder="6000" value="6000">
+        </div>
+      </div>
+      <div class="input-group">
+        <label for="software">Software & Tools</label>
+        <div class="hint">Design tools, hosting, project management, etc.</div>
+        <div class="input-wrapper">
+          <span class="prefix">$</span>
+          <input type="number" id="software" class="has-prefix" placeholder="3000" value="3000">
+        </div>
+      </div>
+      <div class="input-group">
+        <label for="other">Other Expenses</label>
+        <div class="hint">Coworking, equipment, professional development, accounting</div>
+        <div class="input-wrapper">
+          <span class="prefix">$</span>
+          <input type="number" id="other" class="has-prefix" placeholder="2000" value="2000">
+        </div>
+      </div>
+    </div>
+
+    <!-- Billable Hours -->
+    <div class="calc-section">
+      <h2>3. Available Hours</h2>
+      <div class="hours-grid">
+        <div class="input-group">
+          <label for="weeksPerYear">Working Weeks / Year</label>
+          <div class="input-wrapper">
+            <input type="number" id="weeksPerYear" placeholder="48" value="48">
+            <span class="suffix">weeks</span>
+          </div>
+        </div>
+        <div class="input-group">
+          <label for="hoursPerWeek">Hours / Week</label>
+          <div class="input-wrapper">
+            <input type="number" id="hoursPerWeek" placeholder="40" value="40">
+            <span class="suffix">hrs</span>
+          </div>
+        </div>
+        <div class="input-group">
+          <label for="billablePercent">Billable Percentage</label>
+          <div class="hint">Time actually spent on client work (not admin, sales, etc.)</div>
+          <div class="input-wrapper">
+            <input type="number" id="billablePercent" placeholder="65" value="65" min="1" max="100">
+            <span class="suffix">%</span>
+          </div>
+        </div>
+        <div class="input-group">
+          <label for="profitMargin">Profit Margin</label>
+          <div class="hint">Buffer above break-even (10-20% recommended)</div>
+          <div class="input-wrapper">
+            <input type="number" id="profitMargin" placeholder="15" value="15" min="0" max="100">
+            <span class="suffix">%</span>
+          </div>
+        </div>
+      </div>
+      <div class="billable-result">
+        <span>Billable hours per year</span>
+        <span id="billableHours">1,498</span>
+      </div>
+    </div>
+
+    <!-- Results -->
+    <div class="results-section">
+      <h2>Your Rates</h2>
+      <div class="rate-cards">
+        <div class="rate-card">
+          <div class="rate-label">Hourly</div>
+          <div class="rate-value" id="hourlyRate">$0</div>
+          <div class="rate-note">minimum viable</div>
+        </div>
+        <div class="rate-card primary">
+          <div class="rate-label">Day Rate</div>
+          <div class="rate-value" id="dayRate">$0</div>
+          <div class="rate-note">8-hour day</div>
+        </div>
+        <div class="rate-card">
+          <div class="rate-label">Weekly</div>
+          <div class="rate-value" id="weeklyRate">$0</div>
+          <div class="rate-note">5-day week</div>
+        </div>
+      </div>
+
+      <!-- Breakdown -->
+      <div class="breakdown">
+        <h3>Breakdown</h3>
+        <div class="breakdown-row">
+          <span class="label">Desired income</span>
+          <span class="value" id="brkIncome">$75,000</span>
+        </div>
+        <div class="breakdown-row">
+          <span class="label">+ Self-employment taxes</span>
+          <span class="value" id="brkTaxes">$20,000</span>
+        </div>
+        <div class="breakdown-row">
+          <span class="label">+ Health insurance</span>
+          <span class="value" id="brkInsurance">$6,000</span>
+        </div>
+        <div class="breakdown-row">
+          <span class="label">+ Software & tools</span>
+          <span class="value" id="brkSoftware">$3,000</span>
+        </div>
+        <div class="breakdown-row">
+          <span class="label">+ Other expenses</span>
+          <span class="value" id="brkOther">$2,000</span>
+        </div>
+        <div class="breakdown-row total">
+          <span class="label">Total needed / year</span>
+          <span class="value" id="brkTotal">$106,000</span>
+        </div>
+        <div class="breakdown-row">
+          <span class="label">Billable hours / year</span>
+          <span class="value" id="brkHours">1,498</span>
+        </div>
+        <div class="breakdown-row">
+          <span class="label">Break-even hourly rate</span>
+          <span class="value" id="brkBreakeven">$70.76</span>
+        </div>
+        <div class="breakdown-row">
+          <span class="label">+ Profit margin (15%)</span>
+          <span class="value" id="brkMargin">$10.61</span>
+        </div>
+        <div class="breakdown-row total">
+          <span class="label">Recommended hourly rate</span>
+          <span class="value" id="brkFinal">$81.37</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Methodology -->
+    <details class="methodology">
+      <summary>How this is calculated</summary>
+      <div class="method-content">
+        <p>
+          Most freelancers undercharge because they calculate rates from their
+          old salary divided by 2,080 hours. That ignores the costs of
+          self-employment and the reality that not every hour is billable.
+        </p>
+        <p>
+          This calculator uses a bottom-up approach:
+          <code>rate = (income + expenses) / billable_hours * (1 + margin)</code>.
+          It accounts for taxes, insurance, tools, non-billable time (sales,
+          admin, learning), and adds a profit margin so you're not just
+          breaking even.
+        </p>
+        <p>
+          The default 65% billable ratio assumes roughly 26 hours of actual
+          client work per 40-hour week. The rest goes to finding clients,
+          invoicing, emails, skill development, and the occasional stare out
+          the window. Adjust this based on your reality.
+        </p>
+        <p>
+          Day and weekly rates are straight multiples of the hourly rate.
+          For project pricing, estimate hours honestly, multiply by your
+          hourly rate, then add 15-25% for scope creep. You will thank
+          yourself later.
+        </p>
+      </div>
+    </details>
+
+    <!-- CTA -->
+    <div class="cta-banner">
+      <div class="cta-text">
+        <strong>Need more freelancing tools?</strong>
+        Templates, cheat sheets, and resources for independent professionals.
+      </div>
+      <a href="https://zeiyre.gumroad.com" class="cta-link" target="_blank" rel="noopener">Browse on Gumroad</a>
+    </div>
+
+    <!-- Support -->
+    <div class="cta-banner" style="justify-content:center;text-align:center;flex-direction:column;gap:10px">
+      <div class="cta-text">
+        <strong>Find this useful?</strong>
+        This tool is free and always will be. A small tip helps keep it running.
+      </div>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <a href="https://ko-fi.com/zeiyre" class="cta-link" target="_blank" rel="noopener" style="background:var(--green);display:inline-flex;align-items:center;gap:6px">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+          Buy me a coffee
+        </a>
+        <a href="https://paypal.me/LiamCarey0909" class="cta-link" target="_blank" rel="noopener" style="background:var(--accent);display:inline-flex;align-items:center;gap:6px">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11l4.08-9.16A2 2 0 0112.89 1H17a4 4 0 014 4c0 1.05-.4 2-.6 2.5L18 12h-4l-1 7H9l-2-8z"/><path d="M4 15l3-8"/></svg>
+          Tip via PayPal
+        </a>
+      </div>
+    </div>
+
+    <!-- Prompt Playbook CTA -->
+    <div class="cta-banner" style="border-left:3px solid var(--green);gap:12px">
+      <div class="cta-text" style="flex:1">
+        <strong style="font-size:15px">Prompt Playbook -- 50+ Expert Prompt Templates</strong>
+        Tested, copy-paste-ready prompts for developers. Debug faster, write better code, get more from AI tools. <span style="color:var(--green);font-weight:600">$5</span>
+      </div>
+      <a href="mailto:zeiyre.agent@gmail.com?subject=Prompt%20Playbook%20Purchase&body=Hi%2C%20I%27d%20like%20to%20purchase%20the%20Prompt%20Playbook%20(%245).%20Please%20send%20payment%20instructions." class="cta-link" style="background:var(--green);white-space:nowrap">
+        Buy via Email
+      </a>
+    </div>
+
+    <footer>
+      Built by <a href="https://github.com/WilliamZero9/zeiyre" target="_blank" rel="noopener">Zeiyre</a>
+      &middot;
+      <a href="https://ko-fi.com/zeiyre" target="_blank" rel="noopener">Support this project</a>
+      &middot;
+      <a href="https://paypal.me/LiamCarey0909" target="_blank" rel="noopener">Tip via PayPal</a>
+    </footer>
+
+  </div>
+
+  <script>
+    (function () {
+      const $ = (id) => document.getElementById(id);
+      const val = (id) => parseFloat($(id).value) || 0;
+      const fmt = (n) => n.toLocaleString('en-US', { maximumFractionDigits: 0 });
+      const fmtD = (n) => '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      const fmtR = (n) => '$' + Math.round(n).toLocaleString('en-US');
+
+      function calculate() {
+        const salary = val('salary');
+        const taxes = val('taxes');
+        const insurance = val('insurance');
+        const software = val('software');
+        const other = val('other');
+        const weeksPerYear = val('weeksPerYear');
+        const hoursPerWeek = val('hoursPerWeek');
+        const billablePercent = Math.min(Math.max(val('billablePercent'), 1), 100);
+        const profitMargin = Math.min(Math.max(val('profitMargin'), 0), 100);
+
+        const totalHours = weeksPerYear * hoursPerWeek;
+        const billableHours = Math.round(totalHours * (billablePercent / 100));
+        const totalNeeded = salary + taxes + insurance + software + other;
+
+        const breakevenRate = billableHours > 0 ? totalNeeded / billableHours : 0;
+        const marginAmount = breakevenRate * (profitMargin / 100);
+        const hourlyRate = breakevenRate + marginAmount;
+        const dayRate = hourlyRate * 8;
+        const weeklyRate = hourlyRate * 40;
+
+        // Billable hours display
+        $('billableHours').textContent = fmt(billableHours);
+
+        // Rate cards
+        $('hourlyRate').textContent = fmtR(hourlyRate);
+        $('dayRate').textContent = fmtR(dayRate);
+        $('weeklyRate').textContent = fmtR(weeklyRate);
+
+        // Breakdown
+        $('brkIncome').textContent = fmtR(salary);
+        $('brkTaxes').textContent = fmtR(taxes);
+        $('brkInsurance').textContent = fmtR(insurance);
+        $('brkSoftware').textContent = fmtR(software);
+        $('brkOther').textContent = fmtR(other);
+        $('brkTotal').textContent = fmtR(totalNeeded);
+        $('brkHours').textContent = fmt(billableHours);
+        $('brkBreakeven').textContent = fmtD(breakevenRate);
+        $('brkMargin').textContent = fmtD(marginAmount);
+        $('brkFinal').textContent = fmtD(hourlyRate);
+      }
+
+      // Bind all inputs
+      document.querySelectorAll('input[type="number"]').forEach((input) => {
+        input.addEventListener('input', calculate);
+      });
+
+      // Initial calculation
+      calculate();
+    })();
+  </script>
+
+  <!-- Cross-Promotion Footer -->
+  <div style="max-width:900px;margin:3rem auto 2rem;padding:1.5rem 2rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);text-align:center">
+    <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:0.75rem">More free tools from <strong style="color:var(--text)">Zeiyre</strong></p>
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+      <a href="https://zeiyre-hub.netlify.app" target="_blank" rel="noopener" style="color:#fff;background:var(--accent);text-decoration:none;font-size:0.9rem;font-weight:600;padding:0.4rem 1rem;border:1px solid var(--accent);border-radius:6px;transition:opacity 0.2s" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">All Zeiyre Tools</a>
+      <a href="https://delicate-hummingbird-564b8c.netlify.app/" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:none;font-size:0.9rem;padding:0.4rem 1rem;border:1px solid var(--border);border-radius:6px;transition:border-color 0.2s" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">Meta Tag Generator</a>
+      <a href="https://prompt-playbook-landing.netlify.app" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:none;font-size:0.9rem;padding:0.4rem 1rem;border:1px solid var(--border);border-radius:6px;transition:border-color 0.2s" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">Prompt Playbook</a>
+    </div>
+  </div>
+
+</body>
+</html>
